@@ -166,10 +166,6 @@ static id getValueForKey(NSDictionary *info, NSString *key) {
     if ([key isEqualToString:@"kMRMediaRemoteNowPlayingInfoArtworkData"] ||
         [key isEqualToString:@"kMRMediaRemoteNowPlayingInfoClientPropertiesData"]) {
         return [(NSData *)rawValue base64EncodedStringWithOptions:0];
-    } else if ([key isEqualToString:@"kMRMediaRemoteNowPlayingInfoElapsedTime"]) {
-        MRContentItem *contentItem = [[objc_getClass("MRContentItem") alloc]
-                                      initWithNowPlayingInfo:(__bridge NSDictionary *)info];
-        return @(contentItem.metadata.calculatedPlaybackPosition);
     }
     return rawValue;
 }
@@ -344,6 +340,27 @@ static NSDictionary *LegacyInfoDictFromHelperJSON(NSDictionary *json) {
         } else {
             info[legacyKey] = value;
         }
+    }
+
+    // Parse the helper's ISO-8601 "timestamp" into an NSDate so that
+    // computeLiveElapsedTime() can advance the elapsedTime snapshot.
+    id ts = json[@"timestamp"];
+    if ([ts isKindOfClass:[NSString class]]) {
+        static NSISO8601DateFormatter *fmt = nil;
+        static dispatch_once_t once;
+        dispatch_once(&once, ^{ fmt = [[NSISO8601DateFormatter alloc] init]; });
+        NSDate *date = [fmt dateFromString:(NSString *)ts];
+        if (date) info[@"kMRMediaRemoteNowPlayingInfoTimestamp"] = date;
+    }
+
+    // Some sources (notably browsers) leave playbackRate at 1.0 when paused
+    // and only signal pause via the "playing" boolean.  Force the effective
+    // playbackRate to 0 when the source reports it as not playing, so that
+    // computeLiveElapsedTime() and consumers of `get playbackRate` see the
+    // true current state.
+    id playing = json[@"playing"];
+    if ([playing isKindOfClass:[NSNumber class]] && ![playing boolValue]) {
+        info[@"kMRMediaRemoteNowPlayingInfoPlaybackRate"] = @(0.0);
     }
 
     return ([info count] > 0) ? info : nil;
