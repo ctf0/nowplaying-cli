@@ -1,0 +1,125 @@
+{
+  "title": "nowplaying-cli: hold media keys to seek",
+  "rules": [
+    {
+      "description": "Fast-forward: tap = next track, hold = seek forward 5s (repeats while held)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "f9",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to_if_alone": [
+            {
+              "consumer_key_code": "fast_forward"
+            }
+          ],
+          "to_if_held_down": [
+            {
+              "shell_command": "touch /tmp/np-seek-fwd.lock; ~/path/to/nowplaying-cli/Karabiner-Elements/seek/np-seek-hold.sh fwd 5"
+            }
+          ],
+          "to_after_key_up": [
+            {
+              "shell_command": "rm -f /tmp/np-seek-fwd.lock"
+            }
+          ],
+          "parameters": {
+            "basic.to_if_alone_timeout_milliseconds": 400,
+            "basic.to_if_held_down_threshold_milliseconds": 400
+          }
+        },
+        {
+          "type": "basic",
+          "from": {
+            "consumer_key_code": "fast_forward"
+          },
+          "to_if_alone": [
+            {
+              "consumer_key_code": "fast_forward"
+            }
+          ],
+          "to_if_held_down": [
+            {
+              "shell_command": "touch /tmp/np-seek-fwd.lock; ~/path/to/nowplaying-cli/Karabiner-Elements/seek/np-seek-hold.sh fwd 5"
+            }
+          ],
+          "to_after_key_up": [
+            {
+              "shell_command": "rm -f /tmp/np-seek-fwd.lock"
+            }
+          ],
+          "parameters": {
+            "basic.to_if_alone_timeout_milliseconds": 400,
+            "basic.to_if_held_down_threshold_milliseconds": 400
+          }
+        }
+      ]
+    },
+    {
+      "description": "Rewind: tap = previous track, hold = seek backward 5s (repeats while held)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "f7",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to_if_alone": [
+            {
+              "consumer_key_code": "rewind"
+            }
+          ],
+          "to_if_held_down": [
+            {
+              "shell_command": "touch /tmp/np-seek-back.lock; ~/path/to/nowplaying-cli/Karabiner-Elements/seek/np-seek-hold.sh back 5"
+            }
+          ],
+          "to_after_key_up": [
+            {
+              "shell_command": "rm -f /tmp/np-seek-back.lock"
+            }
+          ],
+          "parameters": {
+            "basic.to_if_alone_timeout_milliseconds": 400,
+            "basic.to_if_held_down_threshold_milliseconds": 400
+          }
+        },
+        {
+          "type": "basic",
+          "from": {
+            "consumer_key_code": "rewind"
+          },
+          "to_if_alone": [
+            {
+              "consumer_key_code": "rewind"
+            }
+          ],
+          "to_if_held_down": [
+            {
+              "shell_command": "touch /tmp/np-seek-back.lock; ~/path/to/nowplaying-cli/Karabiner-Elements/seek/np-seek-hold.sh back 5"
+            }
+          ],
+          "to_after_key_up": [
+            {
+              "shell_command": "rm -f /tmp/np-seek-back.lock"
+            }
+          ],
+          "parameters": {
+            "basic.to_if_alone_timeout_milliseconds": 400,
+            "basic.to_if_held_down_threshold_milliseconds": 400
+          }
+        }
+      ]
+    }
+  ]
+}

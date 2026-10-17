@@ -1,3 +1,26 @@
+# New
+
+> Install/Update :
+
+```shell
+git pull && make && make install PREFIX=/opt/homebrew
+```
+
+> remove :
+
+```shell
+make uninstall PREFIX=/opt/homebrew
+rmdir /opt/homebrew/lib/nowplaying-cli /opt/homebrew/share/nowplaying-cli
+```
+
+> media key "back/for ward" hold to seek (Karabiner-Elements)
+
+- update the scripts paths in `nowplaying-cli/Karabiner-Elements/np-hold-seek.json`
+- create an alias to it at `~/.config/karabiner/assets/complex_modifications`
+- enable the new rules under `Karabiner-Elements > Complex Modifications`
+
+---
+
 # nowplaying-cli
 nowplaying-cli is a macOS command-line utility for retrieving currently playing media, and simulating media actions.
 
@@ -5,7 +28,7 @@ Use nowplaying-cli to get song information and play/pause your media through an 
 
 **Disclaimer:** nowplaying-cli uses private frameworks, which may cause it to break with future macOS software updates.
 
-**Tested and working on:** 
+**Tested and working on:**
 - Ventura 13.1, 13.2, 13.3, 13.6
 - Sonoma 14.4
 - Sequoia 15.7
